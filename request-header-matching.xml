@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Policy
+  PolicyId="bingservice:cluster1:worker1:cluster1:service-registry:deny-request-header-matching"
+  RuleCombiningAlgId="bigservice:zerotrust:xacml:1.0:rule-combining-algorithm:deny-overrides">
+    <Description>
+    Access control to service-registry  
+    </Description>
+    <Target>
+		<Subjects>
+			<Subject>
+				<SubjectMatch MatchId="bigservice:zerotrust:xacml:1.0:function:string-equal">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">service-registry</AttributeValue>
+					<SubjectAttributeDesignator
+					  SubjectCategory="SERVICE"
+					  AttributeId="bigservices:node1:service-registry"
+					  DataType="http://www.w3.org/2001/XMLSchema#string" />
+				</SubjectMatch>
+            </Subject>
+		</Subjects>
+    </Target>
+	<Rule RuleId="adminDeny" Effect="DENY">
+		<Description>
+			OperationalStatus is 'Operational'.
+		</Description>
+		<Condition>
+			<Apply FunctionId="bigservice:zerotrust:xacml:1.0:function:and">
+				<Apply FunctionId="bigservice:zerotrust:xacml:1.0:function:request-header-matching">
+					<Apply FunctionId="bigservice:zerotrust:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator
+						SubjectCategory="paths"
+							AttributeId="/qualityIndex/list"
+							DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">TO</AttributeValue>
+				</Apply>
+				<Apply FunctionId="bigservice:zerotrust:xacml:1.0:function:request-header-matching">
+					<Apply FunctionId="bigservice:zerotrust:xacml:1.0:function:string-one-and-only">
+						<SubjectAttributeDesignator
+						SubjectCategory="request.headers:username"
+							AttributeId="values:admin"
+							DataType="http://www.w3.org/2001/XMLSchema#string"/>
+					</Apply>
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+</Policy>
